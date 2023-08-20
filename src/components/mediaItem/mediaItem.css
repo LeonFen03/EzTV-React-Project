@@ -1,0 +1,16 @@
+.mediaContainer {
+    width: 400px;
+    padding:10px;
+    border: 1px solid black;
+    border-radius:5px;
+    box-shadow: 6px 5px 1px grey;
+    margin-top:5px;
+    transition:0.5s;
+}
+.mediaContainer:hover {
+    transform:scale(1.04);
+}
+.mediaContainer .flex {
+    display:flex;
+    justify-content:space-between;
+}

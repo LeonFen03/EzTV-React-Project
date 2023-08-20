@@ -1,0 +1,36 @@
+button {
+    font-size:1.5em;
+    background-color:rgb(255, 255, 255);
+    border-radius: 20px;
+    cursor: pointer;
+    width: 270px;
+    padding: 10px 15px;
+    box-shadow: 4px 4px 1px rgba(20, 20, 51, 0.864);
+    border:0.5px solid rgb(155, 155, 155);
+}
+.map-center {
+    z-index:3;
+}
+#map-container {
+    margin: 10px;
+    box-shadow: 12px 12px 1px rgba(20, 20, 51, 0.864);
+    background-color:white;
+    border-radius:10px;
+    border: 0.5px solid black;
+    padding:40px;
+}
+#selectCountry {
+    font-size: 0.7em;
+    padding: 6px;
+    border-radius: 10px;
+}
+.view {
+    position:absolute;
+    display:flex;
+    cursor:move;
+    z-index: 8;
+    flex-direction: column;
+    align-items:center;
+    right: 10px;
+    top:0px;
+}

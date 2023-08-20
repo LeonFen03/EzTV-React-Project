@@ -1,0 +1,8 @@
+.container-results {
+    border: 2px solid rgb(35, 35, 90);
+    min-width: 800px;
+    width:70%;
+    margin: auto;
+    height:auto;
+    border-radius: 30px;
+}

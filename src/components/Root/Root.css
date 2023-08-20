@@ -1,0 +1,62 @@
+.nav,.nav-color {
+    display:flex;
+    background-color:rgb(255, 250, 250);
+    box-shadow:1px 1px 10px rgb(194, 193, 193);
+    padding: 10x;
+    align-items:center;
+    border-radius: 10px;
+}
+#search {
+    border-radius: 20px;
+    padding: 6px;
+    height: 10px;
+    border:1px solid black;
+}
+#logo {
+    display:inline;
+    font-family:monospace;
+    padding: 10px 40px;
+    font-size: 1.5em;
+}
+.nav ul {
+    width: 500px;
+}
+.nav li {
+    display: inline-block;
+    margin-left: 40px;
+}
+.nav-link {
+    font-size: 1.1em;
+    color:rgb(35, 35, 90);
+    text-decoration:none;
+}
+.animate {
+    display:inline;
+    position: relative;
+    padding: 0.2em 0;
+    cursor:pointer;
+
+}
+
+.animate::after {
+    background-color:rgb(35, 35, 90);
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.1em;
+    opacity: 0;
+    transition: opacity 300ms, transform 300ms;
+  }
+  
+.animate:hover::after,
+.animate:focus::after{
+  transform: scale(1);
+
+}
+.animate::after {
+    opacity: 1;
+    transform: scale(0);
+    transform-origin: center;
+}

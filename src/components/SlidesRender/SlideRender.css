@@ -1,0 +1,227 @@
+.slide-container  {
+    display:flex;
+    margin:20px;
+    justify-content:space-between;
+    position:relative;
+    border: 2px solid rgb(35, 35, 90);
+    background-color:white;
+    min-width:900px;
+    width:80%;
+    max-width: 1100px;
+    height:600px;
+    justify-content:center;
+    border-radius: 30px;
+    box-shadow: 6px 3px 1px rgba(20, 20, 51, 0.864);
+    padding: 15px;
+}
+.dashboard-container {
+    height: 100%;
+    width: 100%;
+}
+.dashboard {
+    width:100%;
+    display:flex;
+    justify-content: space-around;
+    height: 50px;
+}
+.dashboard-header {
+    display:flex;
+    align-items:center;
+    border-bottom: 2px solid rgba(20, 20, 51, 0.864);
+}
+.dashboard-header h3 {
+    margin: 30px 50px;
+}
+.black-position {
+    width: 40%;
+    display:flex;
+    justify-content:flex-end;
+}
+.standard-color-scheme {
+    background-color:white;
+}
+.black-box {
+    display:flex;
+    flex-direction: column;
+    height: 100%;
+    width: 290px;
+    z-index:2;
+    background-color: rgba(20, 20, 51,0.98);
+    font-size: 1.2em;
+    border-radius: 0px 20px 20px 0px;
+    position: absolute;
+    right:0;
+    top:0;
+}
+
+.black-box h4 {
+    text-align:center;
+    color:white;
+}
+.control-board {
+    position:relative;
+    z-index:0;
+    display:flex;
+    justify-content:center;
+}
+.controls {
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+}
+.controls button {
+    width: 190px;
+    margin: 10px;
+    font-weight: 700;
+    font-size: 0.8em;
+}
+.controls button:active {
+    background-color:rgb(243, 238, 238);
+}
+.controls button:hover {
+    background-color:rgb(217, 214, 214);
+}
+.resultContainer {
+    display:flex;
+    overflow-y:scroll;
+    padding: 10px;
+    height:460px;
+}
+.show {
+    border-radius:30px;
+    padding: 10px;
+    width: 200px;
+    height: 170px;
+    background-size: 200% 200%;
+    border:2px solid  rgba(20, 20, 51,0.98);
+    
+}
+.channels {
+    overflow: scroll;
+    border:2px solid black;
+    border-radius:20px;
+    width: 280px;
+    height:400px;
+}
+.show img {
+    width: 30px;
+    height:auto;
+}
+.filter {
+    display:flex;
+    justify-content:space-around;
+    flex-direction: column;
+}
+.filter button {
+    width: 100px;
+}
+.airdates {
+    color:red;
+}
+
+#searchButton {
+    width: 100px;
+    padding: 5px;
+    background: linear-gradient(130deg, rgb(112, 112, 190), #b0e7df,  rgb(35, 35, 90));
+    background-size: 200% 200%;
+    animation: Animation 3s ease infinite;
+}
+#searchButton:active {
+    background: linear-gradient(130deg, rgb(149, 149, 189), #b0e7df, rgb(35, 35, 90));
+    background-size: 200% 200%;
+    animation: Animation 1s ease infinite;
+}
+
+@keyframes Animation { 
+    0%{background-position:10% 0%}
+    50%{background-position:91% 100%}
+    100%{background-position:10% 0%}
+}
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+  }
+  
+  /* Hide default HTML checkbox */
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  /* The slider */
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
+    background-color: #2196F3;
+  }
+  
+  input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+  }
+  
+  input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+    border-radius: 34px;
+  }
+  
+  .slider.round:before {
+    border-radius: 50%;
+  }
+
+  #manage-content .mediaContainer {
+        box-shadow:0px 0px 0px 0;
+        width: 240px;
+        transition:1s;
+        
+  }
+#manage-content {
+    margin: 30px 100px;
+
+}
+#manage-content .mediaContainer:hover {
+    background-color: rgb(35, 35, 90,0.5);
+}
+.searchResults {
+    display:flex;
+    justify-content:flex-end;
+    margin: 0px 290px;
+}
+.searchResults input {
+    width:200px;
+    margin: 5px;
+    border-radius:20px;
+    padding: 5px;
+    font-size: 1em;
+    border: 0.5 solid black;
+}
