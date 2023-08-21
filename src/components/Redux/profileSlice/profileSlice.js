@@ -34,6 +34,7 @@ const profileSettings = {
         "Italy": [41.8719, 12.5674],
         "Croatia": [45.1000, 15.2000]
     },
+    requests:0,
     RenderCount:20,
     ratedHighly: {
         display:[]
@@ -62,6 +63,11 @@ const options ={
     name:'profileSettings',
     initialState:profileSettings,
     reducers: {
+        addShow(state,action) {
+        },
+        changeRequests(state,action) {
+            state.requests = action.payload;
+        },
         clearProfileData (state,action) {
             state.profileIDs.thisWeek = [];
             state.profileIDs.lastWeek = [];
@@ -70,7 +76,7 @@ const options ={
             state.currentCountry = action.payload;
         },
         assignProfileID(state,action) {
-            state.profileIDs[action.payload.week][action.payload.id] = action.payload.profile;
+            state.profileIDs[action.payload.week][action.payload.id] = { ...action.payload.profile, category: action.payload.week};
         },
         changeCount(state,action) {
             state.RenderCount = action.payload;
@@ -87,7 +93,7 @@ const options ={
 
 export const profileSlice = createSlice(options);
 
-export const {loadAll, addChannel, addThisWeek,addLastWeek,addRatedHighly, assignProfileID, addCountry} = profileSlice.actions;
+export const {loadAll,changeRequests, addThisWeek,addLastWeek,addRatedHighly, assignProfileID, addCountry} = profileSlice.actions;
 
 class Map {
     constructor(name) {

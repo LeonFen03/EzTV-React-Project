@@ -7,79 +7,29 @@ import { useState } from 'react';
 import mediaItem from '../mediaItem/mediaItem';
 import { Link } from 'react-router-dom';
 import '../mediaItem/mediaItem.css';
+import { motion } from 'framer-motion';
 import { serveObjectData } from '../../App';
-import {GoogleLogin} from 'react-google-login';
+import { htmlRender } from '../../UtilityFunctions';
+import { renderDashboard } from '../../UtilityFunctions';
+import { sortBy } from '../../UtilityFunctions';
 const date = new Date();
-function htmlRender(name,airdate,day,id ='d') {
-    return (<div id={id}  draggable="true" style={{userSelect:'none'}} onDragStart={(ev) => ev.dataTransfer.setData("text", ev.target.id)} className="mediaContainer">
-    <div className="flex">
-        <Link to={`/TVGuide/${id}`}>{name} </Link>
-        <div>
 
-            {day ? day + ' ' : 'TBA '}
-            <span className="airdates">{airdate}</span> 
-        </div>
-    </div>
-    <div>
 
-    </div>
-    </div>)
-}
-function renderDashboard (array,current,search='') {
-    // {name:element._embedded.show.name, airdate:  element.airdate}
-    return array.map((element)=> {
-                return [<h2 >{element[0]}</h2>,element[1].map((element)=> {
-                const day = serveObjectData(element,'schedule').days[0];
-                let country = serveObjectData(element,'country');
-                    if (country === null) {
-                        country = {name:'none'}
-                }
-                
-                if (country.name === current && element._embedded.show.name.includes(search)) {
 
-                   return htmlRender(element._embedded.show.name,element.airdate,day,element["id"]);
-                }
-                return '';
-                
-                }).filter(i => i !== '')]
-           }).filter(i => i[1].length > 0);
-    
-}
-// .filter(show => show[1].length > 0)
-function sortBy(array,type = 'days') {
-   const sortType = {
-        days: {
-            Monday:[],
-            Tuesday:[],
-            Wednesday:[],
-            Thursday:[],
-            Friday:[],
-            Saturday:[],
-            Sunday: [],
-            TBA:[]
-        }
-   }
-   if (type === 'days') {
-    array.forEach((item)=> {
-            const day = serveObjectData(item,'schedule').days[0];
-            sortType.days[day ? day : 'TBA'].push(item);
-    });
-    return Object.entries(sortType.days);
-   }
-
-}
 function Slides() {
     const current = useSelector((state)=> state.profileSettings.currentCountry)
     const thisWeek = useSelector((state)=> state.profileSettings.profileIDs.thisWeek);
     const lastWeek = useSelector((state)=> state.profileSettings.profileIDs.lastWeek);
     const [searchResults,setSearchResults] = useState('');
-    const [sortby,setSortBy] = useState('days');
+    const sortOrder = ['Recent', 'By Day', 'Most Popular','Oldest']
+    const [sortby,setSortBy] = useState('By Day');
     const defaultArr = [];
     useEffect(()=> {
         document.querySelectorAll('#manage-content .mediaContainer').forEach((container) => {
             container.remove();
-        })
-    },[current])
+    })
+    },[current]);
+
     for (let media in thisWeek) {
         defaultArr.push(thisWeek[media]);
     }
@@ -88,8 +38,14 @@ function Slides() {
     }
     const [dashboard,setDashBoard] = useState(defaultArr);
     const dashboardRendered = useMemo(()=> {
-       return renderDashboard(sortBy(dashboard,sortby),current,searchResults);
-    },[searchResults,current])
+        const [objectSortedBoolean, sortedArray] = sortBy(defaultArr,sortby);
+       return   (<motion.span
+       initial={{ opacity: 0 }}
+       animate={{ opacity: 1}}
+       exit={{ opacity: 0 }}
+       transition={{ duration: 1.7 }}
+   > {renderDashboard(sortedArray,current,searchResults,objectSortedBoolean)}</motion.span>)
+    },[searchResults,current,sortby])
     return (<div className="slide-container">
         <div className="dashboard">
             <div className="dashboard-container">
@@ -98,7 +54,14 @@ function Slides() {
                         
                 </div>
                 <div className="searchResults">
-                    <input value={searchResults} placeholder="search results"  onChange={(event)=> setSearchResults(event.target.value)} />
+                <div className="filter-buttons">
+                    {sortOrder.map((button) => {
+                        return (<button onClick={() => setSortBy(button)}>
+                            {button}
+                        </button>)
+                    })}
+                </div>
+                    <input value={searchResults} placeholder=" search results"  onChange={(event)=> setSearchResults(event.target.value)} />
                 </div>
                 <div className="resultContainer">
                     <div onDrop={(ev) => {
@@ -107,6 +70,7 @@ function Slides() {
                         ev.target.appendChild(document.getElementById(data))
                        
                     }} onDragOver={(ev)=> ev.preventDefault()} >
+        
                     {dashboardRendered}
                     </div>
                 

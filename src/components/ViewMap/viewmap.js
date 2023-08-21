@@ -71,7 +71,7 @@ function ViewMap() {
         <AnimatePresence>
         <motion.span
         initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        animate={{ opacity: 1,bounce:0.5 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1.7 }}
       >
@@ -80,7 +80,7 @@ function ViewMap() {
                 <h2>Streaming from <select id="selectCountry" name="country" onChange={handleChange}>
                     {Object.entries(countrySelector).map((country)=> {
                         if (country[0] === "United States") {
-                            return <option selected="true" value={country[1]} >{country[0]}</option>
+                            return <option selected={true} value={country[1]} >{country[0]}</option>
                         }
                         return <option value={country[1]} >{country[0]}</option>
                     })}

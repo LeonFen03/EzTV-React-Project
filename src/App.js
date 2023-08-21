@@ -21,6 +21,22 @@ export const serveObjectData = (obj,property) => {
   }
   return layer;
 }
+function defaultProperty(property) {
+    if (property !== null && property !== false && property !== {}) {
+        return property;
+    } else {
+      return false;
+    }
+}
+export const morphObjectData = (obj,type) => {
+    if (obj.hasOwnProperty("_embedded") && type === 'embedded') {
+        const show = serveObjectData(obj,'_embedded').show;
+        return { id: defaultProperty(show["id"]), episodeName: defaultProperty(obj.name), channel:(show["network"] ? defaultProperty(show["network"].name) : defaultProperty(show['webChannel'].name)) , season: defaultProperty(obj.season), airdate: defaultProperty(obj.airdate), genres: defaultProperty(show["genres"]), name: defaultProperty(show.name), image: defaultProperty(show["image"].medium), schedule: defaultProperty(show["schedule"]), country: (show["network"] ? show["network"].country.name : show['webChannel'].country.name), runtime: defaultProperty(show.runtime)}
+    } else if (type === 'show') {
+      return { id: obj.id, channel:defaultProperty((obj.show["network"] ? obj.show["network"].name : obj.show['webChannel'].name)) , season:obj.season, airdate:obj.airdate, genres:obj.show["genres"], name: obj.show.name, image:obj.show["image"].medium, schedule: obj.show["schedule"], country: (obj.show["network"] ? obj.show["network"].country.name : obj.show['webChannel'].country.name), runtime: defaultProperty(obj.show.runtime)}
+    }
+    
+}
 function App() {
   
   const appRouter = createBrowserRouter(createRoutesFromElements(

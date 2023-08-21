@@ -42,10 +42,17 @@ function Home  () {
 const currentCountry = useSelector((state)=> state.profileSettings.currentCountry);
 
     return(<>
+     <motion.span
+        initial={{ opacity: 0, transform:`scale(0.5)` }}
+        animate={{ opacity: 1, transform:`scale(1)`}}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1.7,type: "spring" }}
+      >
 	<div className="control-board">
 		<Slides />
     </div>
 	<ShowListing />
+    </motion.span>
 	</>)
 
 }

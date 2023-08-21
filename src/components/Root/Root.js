@@ -7,6 +7,7 @@ import { useSelector,useDispatch } from 'react-redux';
 import { addChannel,addLastWeek,addThisWeek,addRatedHighly,loadAll,assignProfileID } from '../Redux/profileSlice/profileSlice';
 import {countries} from '../Redux/profileSlice/profileSlice';
 import ViewMap from '../ViewMap/viewmap';
+import { morphObjectData, serveObjectData } from '../../App';
 const date = new Date();
 async function getCoords(){
 	const pos = await new Promise((resolve, reject) => {
@@ -57,12 +58,23 @@ function Root() {
         mediaData().then((resolved) => {
             for (let element of resolved) {
                 let airDate = new Date(element.airdate);
+                let show = {};
+                let L = false;
+                try {
+                    show = morphObjectData(element,'embedded');
+                } catch(err) {
+                    L = true;
+                }
+                
                 let country = grabCountry(element);
+                if (L) {
+                    continue;
+                 }
                 if ((airDate - date) >= 0 && ((airDate - date) / 1000) <= 604800 && country === currentCountry) {
-                    dispatch(assignProfileID({ id: element.id, profile: element, week:'thisWeek'}));
+                    dispatch(assignProfileID({ id: show.id, profile: show, week:'thisWeek'}));
                     // console.log(element, '-This Week');
                 } else if  ((airDate - date) < 0 && ((airDate - date) / 1000 ) > -604800 && country === currentCountry) {
-                    dispatch(assignProfileID({ id: element.id, profile: element, week:'lastWeek'}));
+                    dispatch(assignProfileID({ id: show.id, profile: show, week:'lastWeek'}));
                     // console.log(element, '-Last Week');
                 }
             }  
