@@ -1,33 +1,68 @@
 import React from 'react';
-import { AnimatePresence } from 'framer-motion';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
-import { serveObjectData } from '../../App';
-import { useEffect,useState } from 'react';
+import { useEffect,useState,useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { changeRequests } from '../Redux/profileSlice/profileSlice';
 import './TVGuide.css';
-import { motion } from 'framer-motion';
-import { morphObjectData } from '../../App';
-async function grabMetaData(media,type) {
-    const showProfile = await fetch(`https://api.tvmaze.com/shows/${media}`);
-    const showProfileJSON = await showProfile.json();
-    const shows = await fetch(`https://api.tvmaze.com/shows/${media}/seasons`);
-    const seasons = await fetch(`https://api.tvmaze.com/shows/${media}/episodes`);
-    const showJSON = await shows.json();
-    const seasonsJSON = await seasons.json();
-    return [showJSON,seasonsJSON,showProfileJSON];
+import {  motion } from 'framer-motion';
+import { grabMetaData,sortBy,episode } from '../../UtilityFunctions';
+import { date } from '../Home/Home';
+
+function episodeHTMLRender(obj) {
+    return ( <div id="about-episode"><p><span className="clicked">{obj.name}</span> {new Date(obj.airdate) >= date ? `premieres` : 'premiered'} {obj.airdate}</p>
+    <span dangerouslySetInnerHTML={{__html:obj.summary ? obj.summary : "<p>No Description</p>"}}></span>
+    </div>)
 }
 
+function validIndex(arrayLength,index,setIndex) {
+    if (index < 0) {
+        setIndex(0);
+        return 0;
+    } else if (index <= arrayLength - 1) {
+        return index;
+    }  else {
+        setIndex(0);
+        return 0;
+    }
+}
+ 
 function TVGuide() {
+    let result;
     const {media } = useParams();
     const recentMedia = useSelector((state) => state.profileSettings.profileIDs);
+    for (let category in recentMedia) {
+        if (recentMedia[category][media] ) {
+          result = recentMedia[category][media] 
+         break;
+        } else {
+          result = '';
+        }
+    }
     let grabRequestsLimit = useSelector((state)=> state.profileSettings.requests)
+    const [index, setIndex] = useState(0)
     const dispatch = useDispatch();
     const [coolDown,setCoolDown] = useState(false);
     const [show,setShow] = useState({});
-    const [season,SetSeasons] = useState({})
+    const [season,SetSeasons] = useState([])
     const [showProfile,setShowProfile] = useState({})
+    const [episodes,setEpisodes] = useState(result);
+    const seasonRender = useMemo(()=> {
+        const returnValue = episode(sortBy(season,'Seasons'),index,[NextSlide,PreviousSlide],setEpisodes);
+        return returnValue[validIndex(returnValue.length,index,setIndex)];
+    },[season,index])
+    function NextSlide () {
+
+        setIndex((prev) => {
+            return prev+1;
+        });
+    }
+    function PreviousSlide() {
+        setIndex((prev) => {
+            return prev-1;
+        });
+    }
+
     useEffect(() => {
         if (!(grabRequestsLimit <= 3)) {
             setCoolDown(true);
@@ -39,57 +74,57 @@ function TVGuide() {
 
         }
         if (!coolDown) {
+            
            grabMetaData(media).then((resolved) => {
                 const [showJSON,seasonsJSON,showProfileJSON] = resolved;
                 if (!(showJSON === show)) {
                     setShow(showJSON);
-                }
+                 }
                if (!(seasonsJSON === season)) {
-                    SetSeasons(seasonsJSON);
+                    SetSeasons(seasonsJSON)
                 }
-                if (!(showProfileJSON === season)) {
-                    SetSeasons(seasonsJSON);
+                if (!(showProfileJSON === showProfile)) {
+                    setShowProfile(seasonsJSON);
                 }
                 setShowProfile(showProfileJSON);
                 dispatch(changeRequests(grabRequestsLimit++));
             });
+
             
         } 
         
     },[media])
-    let result;
-    for (let category in recentMedia) {
-      if (recentMedia[category][media] ) {
-        result = recentMedia[category][media] 
-       break;
-      } else {
-        result = '';
-      }
-    }
-    console.log(result)
-    // if (serveObjectData(result,'embedded') === null) {
-
-    // }
-    //const [embedded,img,airdate] = [serveObjectData(result,'_embedded'),serveObjectData(result,'image'),serveObjectData(result,'airdate')]
     return (<motion.span
-        initial={{ opacity: 0,transform:`scale(0.4)` }}
-        animate={{ opacity: 1,transform:`scale(1)` }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }} 
         exit={{ opacity: 0 }}
-        transition={{ duration: 1.7,type: "spring" }}
+        transition={{ duration: 1.7 }}
       ><div className="profile-container">
         <div className="header">
             <div className="header-content">
+            <div className="MediaClicked" style={{display:(episodes.airdate ? 'block' : 'none')}}> 
+                    <h2 style={{textDecoration:'underline'}}>Episode Selected</h2>
+                    <p>Channel: {result.channel}</p>
+                    {episodeHTMLRender(episodes)}
+                </div>
                 <h1>{showProfile.name}</h1>
                 <p dangerouslySetInnerHTML={{__html:showProfile.summary}}></p>
-                <div className="MediaClicked">
-                    <p><span className="clicked">{result.episodeName}</span> episode comes out on  {result.airdate}</p>
-                </div>
-                <h3>Seasons:</h3>
+                
             </div>
-
+            <div>
                 <div className="img-container">
                 {showProfile.image ? <img alt={showProfile.name} src={showProfile.image["medium"]} /> : ''}
                 </div>
+                <h3>Seasons:</h3>
+                <div id="seasonContainer" className="seasons">
+                    <div>
+                        Seasons
+                    </div>
+                    {seasonRender}
+                </div>
+            </div>
+               
+
 
         </div>
 

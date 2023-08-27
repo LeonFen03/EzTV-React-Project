@@ -1,7 +1,7 @@
 import {createSlice } from "@reduxjs/toolkit";
 import L from "leaflet";
 const profileSettings = {
-    currentCountry: '',
+    currentCountry: 'United States',
     Country: {
         "Korea, Republic of": [35.9078, 127.7669],
         "Australia": [-25.2744, 133.7751],
@@ -41,6 +41,9 @@ const profileSettings = {
     },
     All:[],
     profileIDs: {
+        actors: {
+
+        },
         show: {
 
         },
@@ -56,14 +59,18 @@ const profileSettings = {
 
 export const countries = (state) => {
     return state.profileSettings.Country;
-}
+} 
 
 
 const options ={
     name:'profileSettings',
     initialState:profileSettings,
     reducers: {
+        addActor (state,action) {
+            state.profileIDs['actors'][action.payload.id] = {...action.payload.profile, category: 'actors'};
+        },
         addShow(state,action) {
+            state.profileIDs['show'][action.payload.id] = {...action.payload.profile, category: 'show'};
         },
         changeRequests(state,action) {
             state.requests = action.payload;
@@ -93,7 +100,7 @@ const options ={
 
 export const profileSlice = createSlice(options);
 
-export const {loadAll,changeRequests, addThisWeek,addLastWeek,addRatedHighly, assignProfileID, addCountry} = profileSlice.actions;
+export const {loadAll,changeRequests, addShow, addActor, addThisWeek,addLastWeek,addRatedHighly, assignProfileID, addCountry} = profileSlice.actions;
 
 class Map {
     constructor(name) {

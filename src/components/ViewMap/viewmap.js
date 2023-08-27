@@ -77,12 +77,12 @@ function ViewMap() {
       >
         <div id="map-container">
             <div id="map">
-                <h2>Streaming from <select id="selectCountry" name="country" onChange={handleChange}>
+                <h2>Streaming from <select  id="selectCountry" name="country" onChange={handleChange}>
                     {Object.entries(countrySelector).map((country)=> {
                         if (country[0] === "United States") {
-                            return <option selected={true} value={country[1]} >{country[0]}</option>
+                            return <option  selected={true} key={country} value={country[1]} >{country[0]}</option>
                         }
-                        return <option value={country[1]} >{country[0]}</option>
+                        return <option key={country} value={country[1]} >{country[0]}</option>
                     })}
                     </select> </h2>
                 <MapContent css={{borderRadius:`1000px`,width:'300px',height:'300px'}} coords={ctry} name='home' setCurrentMap={setCurrentMap} currentMap={currentMap} />
