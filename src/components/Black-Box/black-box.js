@@ -27,7 +27,6 @@ function BlackBox () {
             <button onClick={() => Actors(dispatch,searchMedia,'https://api.tvmaze.com/people')}>View Actors</button>
             <div className="filter">
                   <button>Clear Selected</button>
-                  <button >Yappathon</button>
             </div>
       </div>
         </>)

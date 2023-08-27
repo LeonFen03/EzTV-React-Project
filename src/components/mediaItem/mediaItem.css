@@ -10,7 +10,7 @@
 }
 .mediaContainer:hover {
     transform:scale(1.04);
-    background-color:rgba(53, 53, 120, 0.11);
+    background-color:rgba(41, 41, 41, 0.11);
 }
 .mediaContainer .flex {
     display:flex;

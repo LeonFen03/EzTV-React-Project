@@ -17,17 +17,33 @@ function TypePlaceHolder(sampleObj,sort) {
     }
 }
 
+function dashboardLoading(dashboardData) {
+    let count = 0;
+    if (dashboardData === undefined || dashboardData.length === 0) return [];
+    const dashboardPage = [[]];
+    dashboardData.forEach((element,index)=> {
+        if (index % 200 === 0) {
+            count++;
+            dashboardPage.push([]);
+        } else {
+            dashboardPage[count].push(element);
+        }
+    })
+    return dashboardPage;
+}
+
 function Slides() {
     const current = useSelector((state)=> state.profileSettings.currentCountry)
     //Default state 
-    const dashboardData = useSelector(dashboardSelector);
+    const [page,setPage] = useState(1);
+    const dashboardData = useSelector(dashboardSelector).filter(i => i.country === current || i.country === '');
     const [searchResults,setSearchResults] = useState('');
     const sortOrder = ['Recent', 'By Day', 'Most Popular','Oldest']
     const [sortby,setSortBy] = useState('By Day');
-    const dashboard = useMemo(() => dashboardData.filter(i => i.country === current || i.country === ''),[[],current]);
-
+    const pagesOfDashboard = dashboardLoading(dashboardData);
+    const dashboard = useMemo(() => pagesOfDashboard.length ? pagesOfDashboard[page] : dashboardData,[[],current,page]);
     const dashboardRendered = useMemo(()=> {
-        let sortbyCategory = (dashboard[0] !== undefined && dashboard[0].category === 'actors') ? 'bypass' : sortby;
+        let sortbyCategory = (dashboard[0] !== undefined && dashboard.category === 'actors') ? 'bypass' : sortby;
         sortbyCategory = TypePlaceHolder(dashboard[0],sortbyCategory);
         const [objectSortedBoolean, sortedArray] = sortBy(dashboard,sortbyCategory);
        return   (<motion.span
@@ -36,7 +52,7 @@ function Slides() {
        exit={{ opacity: 0 }}
        transition={{ duration: 1.7 }}
    > {renderDashboard(sortedArray,current,searchResults,objectSortedBoolean)}</motion.span>)
-    },[searchResults,current,sortby,dashboard])
+    },[searchResults,current,sortby,dashboard,page])
         
     return (<div className="slide-container">
         <div className="dashboard">
@@ -57,6 +73,11 @@ function Slides() {
                 </div>
                 <div className="resultContainer">
                     <div>
+                        <div>
+                            {pagesOfDashboard.filter(i => i.length > 0).map((_,index)=> {
+                                return <button onClick={() => setPage((prev) =>  (index + 1))} className="pages">{index + 1}</button>
+                            })}
+                        </div>
                     {dashboardRendered}
                     </div>
                 

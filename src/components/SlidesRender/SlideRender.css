@@ -88,6 +88,12 @@
     padding: 10px;
     height:430px;
 }
+.pages {
+    width: 50px;
+    border-radius:0px;
+    margin:0.4px;
+    transform:scale(0.6)
+}
 .show {
     border-radius:30px;
     padding: 10px;

@@ -145,7 +145,7 @@ export function renderDashboard (array,current = '',search='',sortedWithObject =
         return array.map((element)=> {
             return [<h2 >{element[0]}</h2>,element[1].map((element,index)=> {
             
-            if ((element.name.includes(search) || element.episodeName.includes(search)) ) {
+            if ((element.name.includes(search) || element.episodeName.includes(search) || (element.hasOwnProperty('airdate') && element.airdate.includes(search))) ) {
                return htmlRender(element,index);
             }
             return '';
@@ -164,8 +164,8 @@ export function renderDashboard (array,current = '',search='',sortedWithObject =
     
 }
 
-export function episode(array,listIndex,[Next,Previous],setEpisode) {
-    return array[1].map((element)=> {
+export function episode(sortedArray,listIndex,[Next,Previous],setEpisode) {
+    return (sortedArray[1].map((element)=> {
         return <div>
             <div className="header">
                 <button className="btn" onClick={Next}> {`>`} {/*<i class="fa-solid fa-arrow-right"></i>*/}</button>
@@ -179,16 +179,15 @@ export function episode(array,listIndex,[Next,Previous],setEpisode) {
             </div>
             
         <div className="episodelist"  id={element[0]}>
-       {element[1].map((element,index)=> {
+       {element[1].length > 0 ? element[1].map((element,index)=> {
             return htmlRender({category: 'episode', ...element, setEpisode: setEpisode},index);
-        })} </div></div>
-   });
+        }) : 'No Episodes Found'} </div></div>
+   }))
 }
 
 
 //Sorting Array based on preferences defined
 export function sortBy(array,type = 'By Day') {
-
     const sortType = {
          days: {
              Monday:[],
@@ -204,8 +203,8 @@ export function sortBy(array,type = 'By Day') {
             
          },
          SearchResults: {
-            TVShows: [],
-            Actors:[]
+            "TV Shows": [],
+            "Actors":[]
          }
     }
     if (type === 'By Day') {
@@ -259,7 +258,7 @@ export function sortBy(array,type = 'By Day') {
     }   else if (type === "searchResults") {
         array.forEach((result) => {
             if (result.category === 'showSearch') {
-                sortType.SearchResults.TVShows.push({...result, category: 'premiered'});
+                sortType.SearchResults["TV Shows"].push({...result, category: 'premiered'});
             } else if (result.category === 'actorsSearch') {
                 sortType.SearchResults.Actors.push({...result, category: 'actors'});
             }
@@ -297,7 +296,7 @@ export const morphObjectData = (obj,type) => {
         const show = serveObjectData(obj,'_embedded').show;
         return { id: defaultProperty(show["id"]), episodeName: defaultProperty(obj.name), channel:(show["network"] ? defaultProperty(show["network"].name) : defaultProperty(show['webChannel'].name)) , season: defaultProperty(obj.season), airdate: defaultProperty(obj.airdate), genres: defaultProperty(show["genres"]), name: defaultProperty(show.name), image: defaultProperty(show["image"].medium), schedule: defaultProperty(show["schedule"]), country: (show["network"] ? show["network"].country.name : show['webChannel'].country.name), runtime: defaultProperty(show.runtime)}
     } else if (type === 'show') {
-      return { id: obj.id, channel:defaultProperty((obj["network"] ? obj["network"].name : obj['webChannel'].name)) ,  season:'', airdate:obj.premiered, genres:obj["genres"], name: obj.name, image:obj["image"].medium, schedule: obj["schedule"], country: (obj["network"] ? obj["network"].country.name : obj['webChannel'].country.name), runtime: defaultProperty(obj.runtime)}
+      return { id: obj.id, channel:defaultProperty((obj["network"] ? obj["network"].name : obj['webChannel'].name)) , rating:obj.rating.average, season:'', airdate:obj.premiered, genres:obj["genres"], name: obj.name, image:obj["image"].medium, schedule: obj["schedule"], country: (obj["network"] ? obj["network"].country.name : obj['webChannel'].country.name), runtime: defaultProperty(obj.runtime)}
     } else if (type === 'episode') {
         return { id: obj.id, season:obj.season, summary: obj["summary"], name: obj.name, image:obj["image"].medium, schedule: obj.airtime,  runtime: defaultProperty(obj.runtime)}
     } else if (type === 'actorsSearch') {
@@ -320,8 +319,11 @@ export async function grabMetaData(media) {
 }
 
 export async function showListings() {
-    const Listings = await fetch(`https://api.tvmaze.com/shows?page=1`);
-    return await Listings.json();
+    const Listings1 = await fetch(`https://api.tvmaze.com/shows?page=1`);
+    const ListingsPage1 = await Listings1.json();
+    const Listings2 = await fetch(`https://api.tvmaze.com/shows?page=2`);
+    const ListingsPage2 = await Listings2.json();
+    return [...ListingsPage1,...ListingsPage2];
 }
 
 export async function searchMedia(url) {

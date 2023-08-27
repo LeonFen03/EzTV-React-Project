@@ -1,30 +1,23 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { useEffect,useMemo } from 'react';
+import { useEffect} from 'react';
 import './Root.css';
-import MapContent from '../MapContent/Map';
-import { useSelector,useDispatch } from 'react-redux';
-import { addChannel,addLastWeek,addThisWeek,addRatedHighly,loadAll,assignProfileID } from '../Redux/profileSlice/profileSlice';
-import {countries} from '../Redux/profileSlice/profileSlice';
+import { useDispatch } from 'react-redux';
 import ViewMap from '../ViewMap/viewmap';
-import { morphObjectData} from '../../UtilityFunctions';
-import { grabCountry } from '../../UtilityFunctions';
+import { useNavigate } from 'react-router-dom';
 import { addCountry } from '../Redux/profileSlice/profileSlice';
 export const date = new Date();
-async function getCoords(){
-	const pos = await new Promise((resolve, reject) => {
-		navigator.geolocation.getCurrentPosition(resolve, reject)
-	});
-	return [pos.coords.latitude, pos.coords.longitude]
-}
+
 
 
 
 function Root() {
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     dispatch(addCountry('United States'))
-    const countrySelector = useSelector(countries);
-    const currentCountry = useSelector((state) => state.currentCountry);
+    useEffect(() => {
+        navigate('/Home');
+    },[])
     return (<>
     <nav className="nav">
     <h2 id="logo">EzTv</h2>
