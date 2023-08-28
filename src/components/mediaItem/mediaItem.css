@@ -1,5 +1,5 @@
 .mediaContainer {
-    width: 490px;
+    width: 500px;
     padding:10px;
     border: 1px solid black;
     border-radius:5px;
@@ -8,9 +8,12 @@
     margin-top:5px;
     transition:0.5s;
 }
+.flex > div {
+    margin-left:15px;
+}
 .mediaContainer:hover {
     transform:scale(1.04);
-    background-color:rgba(41, 41, 41, 0.11);
+    background-color:rgba(111, 148, 230, 0.3);
 }
 .mediaContainer .flex {
     display:flex;

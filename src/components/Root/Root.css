@@ -6,6 +6,7 @@
     background: radial-gradient(circle, rgba(255,255,255,1) 76%, rgba(241, 238, 238, 0.668) 100%);
     align-items:center;
     border-radius: 10px;
+    
 }
 #search {
     border-radius: 20px;

@@ -1,0 +1,8 @@
+.window {
+    box-shadow: 4px 4px 15px grey;
+    padding: 30px;
+    border-radius:15px;
+    text-shadow: 4px 4px 5px grey;
+    width: 500px;
+    margin: 100px auto;
+}

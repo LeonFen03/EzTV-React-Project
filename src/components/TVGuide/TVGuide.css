@@ -36,7 +36,7 @@
 #seasonContainer  .btn {
     background-color: white;
     width: 40px;
-    transform:scale(1.2);
+    transform:scale(0.7);
     height: auto;
     border-radius:140px;
      border-width:0px;
@@ -90,6 +90,7 @@ b {
     text-align:center;
     text-decoration: underline;
     color:red !important;
+    text-shadow: 3px 3px 19px rgb(224, 96, 96);
 }
 .profile-container img {
     height:auto;
@@ -126,7 +127,7 @@ b {
     max-height: 600px;
     justify-content:center;
     border:2px solid rgb(186, 19, 19);
-    box-shadow:7px 6px 10px rgb(35, 35, 90);
+    box-shadow:10px 10px 10px rgb(35, 35, 90);
     border-radius:4px;
     overflow:hidden;
     background-size: 200% 200%;

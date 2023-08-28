@@ -5,13 +5,10 @@ import { assignProfileID,loadAll } from "./components/Redux/profileSlice/profile
 import { addShow } from "./components/Redux/profileSlice/profileSlice";
 import { animate } from "framer-motion";
 import { addActor } from "./components/Redux/profileSlice/profileSlice";
+import ArrowL from './images/arrowL.svg';
+import ArrowR from './images/arrowR.svg';
 const date = new Date();
-// let gapi = window.gapi
-// const CLIENT_ID = "244966774357-lar6f93e0sisfhuj0f592j29v3dul6qv.apps.googleusercontent.com"
-// const API_KEY = "AIzaSyD7dtQlkwAJFNQNJMcwFNXgTaJx_-ISeU0"
-// const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
-// const SCOPES = "https://www.googleapis.com/auth/calendar"
-
+// Formats time
 const getFormattedTime = function (fourDigitTime){
     var hours24 = parseInt(fourDigitTime.substring(0,2));
     var hours = ((hours24 + 11) % 12) + 1;
@@ -20,65 +17,6 @@ const getFormattedTime = function (fourDigitTime){
 
     return hours + ':' + minutes + amPm;
 };
-
-
-// export function handleClick() {
-//     gapi.load('client:auth2', () => {
-//         console.log('loaded client')
-  
-//         gapi.client.init({
-//           apiKey: API_KEY,
-//           clientId: CLIENT_ID,
-//           discoveryDocs: DISCOVERY_DOCS,
-//           scope: SCOPES,
-//         })
-  
-//         gapi.client.load('calendar', 'v3', () => console.log('bam!'))
-  
-//         gapi.auth2.getAuthInstance().signIn().then(() => {
-          
-//           var event = {
-//             'summary': 'NIgggies die!',
-//             'location': '800 Howard St., San Francisco, CA 94103',
-//             'description': 'Really great refreshments',
-//             'start': {
-//               'dateTime': '2020-06-28T09:00:00-07:00',
-//               'timeZone': 'America/Los_Angeles'
-//             },
-//             'end': {
-//               'dateTime': '2020-06-28T17:00:00-07:00',
-//               'timeZone': 'America/Los_Angeles'
-//             },
-//             'recurrence': [
-//               'RRULE:FREQ=DAILY;COUNT=2'
-//             ],
-//             'attendees': [
-//               {'email': 'lpage@example.com'},
-//               {'email': 'sbrin@example.com'}
-//             ],
-//             'reminders': {
-//               'useDefault': false,
-//               'overrides': [
-//                 {'method': 'email', 'minutes': 24 * 60},
-//                 {'method': 'popup', 'minutes': 10}
-//               ]
-//             }
-//           }
-  
-//           let request = gapi.client.calendar.events.insert({
-//             'calendarId': 'primary',
-//             'resource': event,
-//           })
-  
-//           request.execute(event => {
-//             window.open(event.htmlLink)
-//           })
-        
-//       })
-//     })
-//   }
-
-
 
 export async function mediaData(url = 'https://api.tvmaze.com/schedule/full') {
     const allSchedules = await fetch(url);
@@ -114,7 +52,6 @@ export function htmlRender(showObject,key = '') {
     
                 {showObject.schedule.days[0] ? showObject.schedule.days[0]  + ' ' : 'TBA '}
     <b >{`premiered: ${showObject.airdate}`}</b>
-                
             </div>
             <input type="checkbox" />
         </div>
@@ -130,7 +67,7 @@ export function htmlRender(showObject,key = '') {
         </div>)
     } else if ( showObject.category === 'actors') {
         return (<div key={key} id={showObject.id}   style={{userSelect:'none'}} className="mediaContainer">
-         <b><Link to={`/Actor/${showObject.id}`}>{showObject.name}</Link></b> <p> <span className="actor">{`Gender: ${showObject.gender}`}</span> <span className="actor">{`Birthday: ${showObject.birthday}`}</span>  <span className="actor">{showObject.deathday }</span> </p>
+         <Link to={`/Actor/${showObject.id}`}><b>{showObject.name}</b></Link> <p> <span className="actor">{`Gender: ${showObject.gender}`}</span> <span className="actor">{`Birthday: ${showObject.birthday}`}</span>  <span className="actor">{showObject.deathday }</span> </p>
     <div>
     </div>
     <div>{showObject.description}</div>
@@ -140,12 +77,12 @@ export function htmlRender(showObject,key = '') {
 }
 
 // DashBoard logic for Elements sorted through Objects or Arrays.
-export function renderDashboard (array,current = '',search='',sortedWithObject = false) {
+export function renderDashboard (array,search='',sortedWithObject = false) {
     if (sortedWithObject === true) {
         return array.map((element)=> {
-            return [<h2 >{element[0]}</h2>,element[1].map((element,index)=> {
+            return [<h2 >{element[0]} <img src=""/> </h2>,element[1].map((element,index)=> {
             
-            if ((element.name.includes(search) || element.episodeName.includes(search) || (element.hasOwnProperty('airdate') && element.airdate.includes(search))) ) {
+            if (( (element.name.includes(search)) || element.episodeName.includes(search) || (element.hasOwnProperty('airdate') && element.airdate.includes(search))) ) {
                return htmlRender(element,index);
             }
             return '';
@@ -163,22 +100,22 @@ export function renderDashboard (array,current = '',search='',sortedWithObject =
    
     
 }
-
-export function episode(sortedArray,listIndex,[Next,Previous],setEpisode) {
+// Function that render the appearance of the each episode related to it's season within the TVGuide.
+export function episode(sortedArray,[Next,Previous],setEpisode) {
     return (sortedArray[1].map((element)=> {
         return <div>
             <div className="header">
-                <button className="btn" onClick={Next}> {`>`} {/*<i class="fa-solid fa-arrow-right"></i>*/}</button>
-                <span onClick={() => {
+                <button className="btn" onClick={Next}> {<img alt='arrow-left-logo' width="10" src={ArrowR} />}</button>
+                <span style={{cursor:'pointer'}} onClick={() => {
                 
                 const toggleStatus = (document.getElementById(element[0]).getBoundingClientRect().height === 0);
-                (toggleStatus ? animate(document.getElementById(element[0]), { height:`550px`,padding:'15px',overflow:'scroll'}, { duration: 0.5 }) : animate(document.getElementById(element[0]), { height:`0px`,padding:'0px',overflow:'none',border:'0px'}, { duration: 0.5 }))
+                (toggleStatus ? animate(document.getElementById(element[0]), { height:`350px`,padding:'15px',overflow:'scroll'}, { duration: 0.5 }) : animate(document.getElementById(element[0]), { height:`0px`,padding:'0px',overflow:'none',border:'0px'}, { duration: 0.5 }))
             
-            } }>{element[0]}</span>
-             <button className="btn" onClick={Previous}> {`<`} </button>
+            } } className="animate">{element[0]}</span>
+             <button className="btn" onClick={Previous}> {<img  alt='arrow-right-logo' width="10" src={ArrowL} />} </button>
             </div>
             
-        <div className="episodelist"  id={element[0]}>
+        <div className="episodelist" id={element[0]}>
        {element[1].length > 0 ? element[1].map((element,index)=> {
             return htmlRender({category: 'episode', ...element, setEpisode: setEpisode},index);
         }) : 'No Episodes Found'} </div></div>
@@ -205,6 +142,10 @@ export function sortBy(array,type = 'By Day') {
          SearchResults: {
             "TV Shows": [],
             "Actors":[]
+         },
+         Popular: {
+            "Most Popular":[],
+            "UnRated":[]
          }
     }
     if (type === 'By Day') {
@@ -264,7 +205,7 @@ export function sortBy(array,type = 'By Day') {
             }
         })
         return [true,Object.entries(sortType.SearchResults)]
-    }
+    } 
 
  
  }
@@ -283,7 +224,7 @@ export function sortBy(array,type = 'By Day') {
       }
     }
     return layer;
-  }
+}
 function defaultProperty(property) {
     if (property !== null && property !== false && property !== {}) {
         return property;
@@ -296,15 +237,15 @@ export const morphObjectData = (obj,type) => {
         const show = serveObjectData(obj,'_embedded').show;
         return { id: defaultProperty(show["id"]), episodeName: defaultProperty(obj.name), channel:(show["network"] ? defaultProperty(show["network"].name) : defaultProperty(show['webChannel'].name)) , season: defaultProperty(obj.season), airdate: defaultProperty(obj.airdate), genres: defaultProperty(show["genres"]), name: defaultProperty(show.name), image: defaultProperty(show["image"].medium), schedule: defaultProperty(show["schedule"]), country: (show["network"] ? show["network"].country.name : show['webChannel'].country.name), runtime: defaultProperty(show.runtime)}
     } else if (type === 'show') {
-      return { id: obj.id, channel:defaultProperty((obj["network"] ? obj["network"].name : obj['webChannel'].name)) , rating:obj.rating.average, season:'', airdate:obj.premiered, genres:obj["genres"], name: obj.name, image:obj["image"].medium, schedule: obj["schedule"], country: (obj["network"] ? obj["network"].country.name : obj['webChannel'].country.name), runtime: defaultProperty(obj.runtime)}
+      return { id: defaultProperty(obj.id), channel:defaultProperty((obj["network"] ? obj["network"].name : obj['webChannel'].name)) , rating:defaultProperty(obj.rating.average), season:defaultProperty(''), airdate: defaultProperty(obj.premiered), genres: defaultProperty(obj["genres"]), name: defaultProperty(obj.name), image: defaultProperty(obj["image"].medium), schedule: defaultProperty(obj["schedule"]), country: defaultProperty((obj["network"] ? obj["network"].country.name : obj['webChannel'].country.name)), runtime: defaultProperty(obj.runtime)}
     } else if (type === 'episode') {
-        return { id: obj.id, season:obj.season, summary: obj["summary"], name: obj.name, image:obj["image"].medium, schedule: obj.airtime,  runtime: defaultProperty(obj.runtime)}
+        return { id: defaultProperty(obj.id), season:defaultProperty(obj.season), summary: defaultProperty(obj["summary"]), name: defaultProperty(obj.name), image:defaultProperty(obj["image"].medium), schedule: defaultProperty(obj.airtime),  runtime: defaultProperty(obj.runtime)}
     } else if (type === 'actorsSearch') {
-        return { id: obj.person.id, birthday: defaultProperty(obj.person.birthday), name: obj.person.name, image:obj.person["image"].medium, country: defaultProperty(obj.person.country.name),  deathday: defaultProperty(obj.person.deathday)}
+        return { id: defaultProperty(obj.person.id), birthday: defaultProperty(obj.person.birthday), name: defaultProperty(obj.person.name), image:defaultProperty(obj.person["image"].medium), country: defaultProperty(obj.person.country.name),  deathday: defaultProperty(obj.person.deathday)}
     } else if (type === 'actors') {
-        return { id: obj.id, birthday: defaultProperty(obj.birthday), gender: obj.gender, name: obj.name, image:obj["image"].medium, country: defaultProperty(obj.country.name),  deathday: (defaultProperty(obj.deathday) === false) ? 'No Recorded Death Date' :  `Death: ${obj.deathday}`}
+        return { id: obj.id, birthday: (defaultProperty(obj.birthday) === false) ? 'Not Recorded' : defaultProperty(obj.birthday), gender: defaultProperty(obj.gender), name: defaultProperty(obj.name), image:defaultProperty(obj["image"].medium), country: defaultProperty(obj.country.name),  deathday: (defaultProperty(obj.deathday) === false) ? 'No Recorded Death Date' :  `Death: ${obj.deathday}`}
     }  else if (type === 'showSearch') {
-        return { id: obj.show.id, channel:defaultProperty((obj.show["network"] ? obj.show["network"].name : obj.show['webChannel'].name)) ,  season:'', airdate:obj.show.premiered, genres:obj.show["genres"], name: obj.show.name, image:'', schedule: obj.show["schedule"], country: '', runtime: defaultProperty(obj.show.runtime)}// defaultProperty((obj.show["network"] ? obj.show["network"].country : obj['webChannel'].country))
+        return { id: defaultProperty(obj.show.id), channel:defaultProperty((obj.show["network"] ? obj.show["network"].name : obj.show['webChannel'].name)) ,  season:defaultProperty(''), airdate:defaultProperty(obj.show.premiered), genres:defaultProperty(obj.show["genres"]), name: defaultProperty(obj.show.name), image:defaultProperty(''), schedule: defaultProperty(obj.show["schedule"]), country: defaultProperty(''), runtime: defaultProperty(obj.show.runtime)}// defaultProperty((obj.show["network"] ? obj.show["network"].country : obj['webChannel'].country))
     }
 }
 
@@ -318,13 +259,7 @@ export async function grabMetaData(media) {
     return [showJSON,seasonsJSON,showProfileJSON];
 }
 
-export async function showListings() {
-    const Listings1 = await fetch(`https://api.tvmaze.com/shows?page=1`);
-    const ListingsPage1 = await Listings1.json();
-    const Listings2 = await fetch(`https://api.tvmaze.com/shows?page=2`);
-    const ListingsPage2 = await Listings2.json();
-    return [...ListingsPage1,...ListingsPage2];
-}
+
 
 export async function searchMedia(url) {
     const Listings = await fetch(url);
@@ -354,9 +289,9 @@ export function grabCountry(obj) {
     return false;
 }
 
-export async function searchResults(search) { //https://api.tvmaze.com/search/shows?q=girls
-    const showJSON = await fetch(`https://api.tvmaze.com/search/shows?q=${search}`);
-    const peopleJSON = await fetch(`https://api.tvmaze.com/search/people?q=${search}`);
+export async function searchResults(search) {
+    const showJSON = await fetch(`https://api.tvmaze.com/search/shows?q=${search.toLowerCase()}`);
+    const peopleJSON = await fetch(`https://api.tvmaze.com/search/people?q=${search.toLowerCase()}`);
     const show = await showJSON.json();
     const people = await peopleJSON.json();
     return [show, people]
@@ -364,6 +299,7 @@ export async function searchResults(search) { //https://api.tvmaze.com/search/sh
 }
 
 export function searchResultsRender(dispatch,media,search) {
+
    const searchJSON = media(search);
     searchJSON.then((resolved) => {
         dispatch(clearArray());
@@ -392,11 +328,17 @@ export function searchResultsRender(dispatch,media,search) {
   })
   
   
-  }
+}
+export async function showListings() {
+    const Listings1 = await fetch(`https://api.tvmaze.com/shows?page=1`);
+    const ListingsPage1 = await Listings1.json();
+    const Listings2 = await fetch(`https://api.tvmaze.com/shows?page=2`);
+    const ListingsPage2 = await Listings2.json();
+    return [...ListingsPage1,...ListingsPage2];
+}
 
-
-export function newContent(dispatch,currentCountry, media = showListings,data='') {
-    media(data).then((resolved) => {
+export function newContent(dispatch) {
+    showListings().then((resolved) => {
           dispatch(clearArray());
           for (let element of resolved) {
             let show = {};

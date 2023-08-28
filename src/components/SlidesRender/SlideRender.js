@@ -38,12 +38,12 @@ function Slides() {
     const [page,setPage] = useState(1);
     const dashboardData = useSelector(dashboardSelector).filter(i => i.country === current || i.country === '');
     const [searchResults,setSearchResults] = useState('');
-    const sortOrder = ['Recent', 'By Day', 'Most Popular','Oldest']
+    const sortOrder = ['Recent', 'By Day', 'Oldest'];
     const [sortby,setSortBy] = useState('By Day');
     const pagesOfDashboard = dashboardLoading(dashboardData);
-    const dashboard = useMemo(() => pagesOfDashboard.length ? pagesOfDashboard[page] : dashboardData,[[],current,page]);
+    const dashboard = useMemo(() => pagesOfDashboard.length ? pagesOfDashboard[page] : dashboardData,[[],page,dashboardData,pagesOfDashboard]);
     const dashboardRendered = useMemo(()=> {
-        let sortbyCategory = (dashboard[0] !== undefined && dashboard.category === 'actors') ? 'bypass' : sortby;
+        let sortbyCategory = (dashboard[0] !== undefined && dashboard[0].category === 'actors') ? 'bypass' : sortby;
         sortbyCategory = TypePlaceHolder(dashboard[0],sortbyCategory);
         const [objectSortedBoolean, sortedArray] = sortBy(dashboard,sortbyCategory);
        return   (<motion.span
@@ -51,8 +51,8 @@ function Slides() {
        animate={{ opacity: 1}}
        exit={{ opacity: 0 }}
        transition={{ duration: 1.7 }}
-   > {renderDashboard(sortedArray,current,searchResults,objectSortedBoolean)}</motion.span>)
-    },[searchResults,current,sortby,dashboard,page])
+   > {renderDashboard(sortedArray,searchResults,objectSortedBoolean)}</motion.span>)
+    },[searchResults,sortby,dashboard,page])
         
     return (<div className="slide-container">
         <div className="dashboard">
@@ -64,7 +64,7 @@ function Slides() {
                 <div className="searchResults">
                 <div className="filter-buttons">
                     {sortOrder.map((button) => {
-                        return (<button key={button} onClick={() => setSortBy(button)}>
+                        return (<button key={button} style={{backgroundColor: button === sortby ? 'rgb(35, 35, 90)' : 'white', color: button === sortby ? 'white' : 'rgb(35, 35, 90)'}} onClick={() => setSortBy(button)}>
                             {button}
                         </button>)
                     })}
@@ -75,7 +75,7 @@ function Slides() {
                     <div>
                         <div>
                             {pagesOfDashboard.filter(i => i.length > 0).map((_,index)=> {
-                                return <button onClick={() => setPage((prev) =>  (index + 1))} className="pages">{index + 1}</button>
+                                return <button style={{backgroundColor: index+1 === page ? 'rgb(35, 35, 90)' : 'white', color: index+1 === page ? 'white' : 'rgb(35, 35, 90)'}} onClick={() => setPage(() =>  (index + 1))} className="pages">{index + 1}</button>
                             })}
                         </div>
                     {dashboardRendered}
@@ -86,7 +86,7 @@ function Slides() {
             <div>
                 
                 <div className="black-box">
-                  <BlackBox currentCountry={current} />
+                  <BlackBox reset={setPage} currentCountry={current} />
                 </div>
             </div>
         </div>

@@ -17,16 +17,16 @@ function Root() {
     dispatch(addCountry('United States'))
     useEffect(() => {
         navigate('/Home');
-    },[])
+    },[navigate])
     return (<>
     <nav className="nav">
     <h2 id="logo">EzTv</h2>
         <ul>
             <li>
-            <NavLink to="/Home" className="nav-link animate " >Home </NavLink>
+            <NavLink to="/Home" className="nav-link animate " >  Home </NavLink>
             </li>
             <li>
-            <NavLink to="/A-Z" className="nav-link animate " >About </NavLink>
+            <NavLink to="/About" className="nav-link animate " >About </NavLink>
             </li>
             <li>
             <NavLink to="/Profile" className="nav-link animate r" >Profile</NavLink>

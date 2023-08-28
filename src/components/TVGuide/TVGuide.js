@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import { useEffect,useState,useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { changeRequests } from '../Redux/profileSlice/profileSlice';
-import './TVGuide.css';
 import {  motion, useAnimationControls} from 'framer-motion';
 import { grabMetaData,sortBy,episode } from '../../UtilityFunctions';
 import { date } from '../Home/Home';
 import { AnimatePresence } from 'framer-motion';
+import './TVGuide.css';
 function episodeHTMLRender(obj) {
     return ( <div id="about-episode"><p><span className="clicked">{obj.name}</span> {new Date(obj.airdate) >= date ? `premieres` : 'premiered'} {obj.airdate}</p>
     <span dangerouslySetInnerHTML={{__html:obj.summary ? obj.summary : "<p>No Description</p>"}}></span>
@@ -28,10 +28,19 @@ function validIndex(arrayLength,index,setIndex) {
 }
  
 function TVGuide() {
+    // Declaration of State Variables
     let result;
     const {media } = useParams();
     const animatePresence = useAnimationControls();
     const recentMedia = useSelector((state) => state.profileSettings.profileIDs);
+    let grabRequestsLimit = useSelector((state)=> state.profileSettings.requests)
+    const [index, setIndex] = useState(0)
+    const dispatch = useDispatch();
+    const [coolDown,setCoolDown] = useState(false);
+    const [show,setShow] = useState({});
+    const [season,SetSeasons] = useState([])
+    const [showProfile,setShowProfile] = useState({})
+    // Grab profile with ID given through parameters
     for (let category in recentMedia) {
         if (recentMedia[category][media] ) {
           result = recentMedia[category][media] 
@@ -40,19 +49,13 @@ function TVGuide() {
           result = '';
         }
     }
-    let grabRequestsLimit = useSelector((state)=> state.profileSettings.requests)
-    const [index, setIndex] = useState(0)
-    const dispatch = useDispatch();
-    const [coolDown,setCoolDown] = useState(false);
-    const [show,setShow] = useState({});
-    const [season,SetSeasons] = useState([])
-    const [showProfile,setShowProfile] = useState({})
+
     const [episodes,setEpisodes] = useState(result);
     const seasonRender = useMemo(()=> {
-
-        const returnValue = episode(sortBy(season,'Seasons'),index,[NextSlide,PreviousSlide],setEpisodes);
+        const returnValue = episode(sortBy(season,'Seasons'),[NextSlide,PreviousSlide],setEpisodes);
         return returnValue[validIndex(returnValue.length,index,setIndex)];
-    },[season,index])
+    },[season,index]);
+    
     const wrapperVariants = {
         bounceStart: {
             transform: 'scale(0.94)',
@@ -62,7 +65,8 @@ function TVGuide() {
             transform: 'scale(1)',
           transition: { ease: 'easeInOut' },
         },
-      };
+    };
+
     function NextSlide () {
         setIndex((prev) => {
             return prev+1;
@@ -73,12 +77,17 @@ function TVGuide() {
             return prev-1;
         });
     }
+
     useEffect(()=> {
         animatePresence.start('bounceStart')
-        setTimeout(()=> {
+        const delaySpring = setTimeout(()=> {
             animatePresence.start('bounceEnd')
         },500)
-    },[index])
+        return () => {
+            clearTimeout(delaySpring);
+        }
+    },[index,animatePresence])
+
     useEffect(() => {
         if (!(grabRequestsLimit <= 3)) {
             setCoolDown(true);
@@ -90,7 +99,6 @@ function TVGuide() {
 
         }
         if (!coolDown) {
-            
            grabMetaData(media).then((resolved) => {
                 const [showJSON,seasonsJSON,showProfileJSON] = resolved;
                 if (!(showJSON === show)) {
@@ -110,6 +118,8 @@ function TVGuide() {
         } 
         
     },[media])
+
+
     return (<motion.span
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }} 
@@ -140,9 +150,6 @@ function TVGuide() {
                 </div>
                 <h3>Seasons:</h3>
                 <div id="seasonContainer" className="seasons">
-                    <div>
-                        Seasons
-                    </div>
                     <motion.div
                     variants={wrapperVariants}
         initial='bounceStart'
