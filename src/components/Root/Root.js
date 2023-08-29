@@ -28,9 +28,6 @@ function Root() {
             <li>
             <NavLink to="/About" className="nav-link animate " >About </NavLink>
             </li>
-            <li>
-            <NavLink to="/Profile" className="nav-link animate r" >Profile</NavLink>
-            </li>
         </ul>
         
     </nav>

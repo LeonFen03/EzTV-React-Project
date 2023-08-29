@@ -121,6 +121,6 @@ function TVGuide() {
     },[media])
 
 
-    return <GuideLayout result={result} episodes={episodes} showProfile={showProfile} seasonRender={seasonRender} animatePresence={animatePresence} episodeHTMLRender={episodeHTMLRender} />
+    return <GuideLayout result={result} episodes={episodes} showProfile={showProfile} seasonRender={seasonRender} animatePresence={animatePresence} episodeHTMLRender={episodeHTMLRender} arrowsSvg={[]}/>
 }
 export default TVGuide;

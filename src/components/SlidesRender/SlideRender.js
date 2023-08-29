@@ -79,7 +79,13 @@ function Slides() {
                             return <button style={{backgroundColor: index+1 === page ? 'rgb(35, 35, 90)' : 'white', color: index+1 === page ? 'white' : 'rgb(35, 35, 90)'}} onClick={() => setPage(() =>  (index + 1))} className="pages">{index + 1}</button>
                         })}
                     </div>
-                {dashboardRendered}
+                    <motion.div
+        initial={{ opacity: 0, transform:`scale(0.9)` }}
+        animate={{ opacity: 1, transform:`scale(1)`}}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 1.7,type: "spring" }}
+      >
+                {dashboardRendered}</motion.div>
                 </div>)}
                 
                 </div>

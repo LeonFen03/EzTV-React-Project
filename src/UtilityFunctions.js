@@ -296,8 +296,8 @@ export function grabCountry(obj) {
 }
 
 export async function searchResults(search) {
-    const showJSON = await fetch(`https://api.tvmaze.com/search/shows?q=${search.toLowerCase()}`);
-    const peopleJSON = await fetch(`https://api.tvmaze.com/search/people?q=${search.toLowerCase()}`);
+    const showJSON = await fetch(`https://api.tvmaze.com/search/shows?q=${search}`);
+    const peopleJSON = await fetch(`https://api.tvmaze.com/search/people?q=${search}`);
     const show = await showJSON.json();
     const people = await peopleJSON.json();
     return [show, people]
