@@ -24,7 +24,7 @@ function MapContent ({coords, name, css, setCurrentMap, currentMap}) {
             clearInterval(ping);
         }
     },[coords]);
-    return (<div>
+    return (<div >
         <div style={css} className="map" id={name}>
         </div>
     </div>) 

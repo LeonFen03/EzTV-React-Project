@@ -9,3 +9,31 @@
 body {
   background: radial-gradient(circle, rgba(255,255,255,1) 76%, rgba(167, 167, 167, 0.758) 100%);
 }
+
+.loader-container {
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  bottom:200;
+  z-index: 1;
+}
+
+.spinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: rgb(35, 35, 90) transparent rgb(35, 35, 90) transparent;
+  border-radius: 50%;
+  animation: spin-anim 1.2s linear infinite;
+}
+
+@keyframes spin-anim {
+  0% {
+      transform: rotate(0deg);
+  }
+  100% {
+      transform: rotate(360deg);
+  }
+}

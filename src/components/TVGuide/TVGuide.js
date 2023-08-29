@@ -7,8 +7,9 @@ import { changeRequests } from '../Redux/profileSlice/profileSlice';
 import {  motion, useAnimationControls} from 'framer-motion';
 import { grabMetaData,sortBy,episode } from '../../UtilityFunctions';
 import { date } from '../Home/Home';
-import { AnimatePresence } from 'framer-motion';
+import GuideLayout from './GuideLayout'
 import './TVGuide.css';
+
 function episodeHTMLRender(obj) {
     return ( <div id="about-episode"><p><span className="clicked">{obj.name}</span> {new Date(obj.airdate) >= date ? `premieres` : 'premiered'} {obj.airdate}</p>
     <span dangerouslySetInnerHTML={{__html:obj.summary ? obj.summary : "<p>No Description</p>"}}></span>
@@ -26,7 +27,7 @@ function validIndex(arrayLength,index,setIndex) {
         return 0;
     }
 }
- 
+ // [result, media, animatePresence, recentMedia, grabRequestsLimit, [index,setIndex], dispatch, [coolDown,setCoolDown], [show,setShow],[season,setSeasons],[showProfile,setShowProfile]]
 function TVGuide() {
     // Declaration of State Variables
     let result;
@@ -120,51 +121,6 @@ function TVGuide() {
     },[media])
 
 
-    return (<motion.span
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }} 
-        exit={{ opacity: 0 }}
-        transition={{ duration: 1.7 }}
-      ><div className="profile-container">
-        <div className="header">
-            <div className="header-content">
-            <div className="MediaClicked" style={{display:(episodes.airdate ? 'block' : 'none')}}> 
-                    <h2 style={{textDecoration:'underline'}}>Episode Selected</h2>
-                    <p>Channel: {result.channel}</p>
-                    <AnimatePresence>
-                    <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1}}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1 }}
-      >{episodeHTMLRender(episodes)}</motion.div>
-      </AnimatePresence>
-                </div>
-                <h1>{showProfile.name}</h1>
-                <p dangerouslySetInnerHTML={{__html:showProfile.summary}}></p>
-                
-            </div>
-            <div>
-                <div className="img-container">
-                {showProfile.image ? <img alt={showProfile.name} src={showProfile.image["medium"]} /> : ''}
-                </div>
-                <h3>Seasons:</h3>
-                <div id="seasonContainer" className="seasons">
-                    <motion.div
-                    variants={wrapperVariants}
-        initial='bounceStart'
-        animate={animatePresence} 
-        exit="bounceEnd"
-        transition={{ duration: 0.2 }}
-      >
-                    {seasonRender}</motion.div>
-                </div>
-            </div>
-               
-
-
-        </div>
-
-    </div></motion.span>) 
+    return <GuideLayout result={result} episodes={episodes} showProfile={showProfile} seasonRender={seasonRender} animatePresence={animatePresence} episodeHTMLRender={episodeHTMLRender} />
 }
 export default TVGuide;

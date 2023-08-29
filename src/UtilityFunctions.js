@@ -23,6 +23,12 @@ export async function mediaData(url = 'https://api.tvmaze.com/schedule/full') {
     return await allSchedules.json();
 }    
 
+export default function LoadingPreset() {
+    return (<div className="loader-container">
+        <p style={{position:'absolute',fontSize:'0.7em'}}>Loading...</p>
+    <div className="spinner"></div>
+</div>)
+}
 
 //Military time converter 
 // Render HTML DashBoard Objects

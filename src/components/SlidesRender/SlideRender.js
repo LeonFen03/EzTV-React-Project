@@ -3,12 +3,12 @@ import React, { useMemo } from 'react';
 import BlackBox from '../Black-Box/black-box';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
-import '../mediaItem/mediaItem.css';
+import './EpisodeListItems.css';
 import { motion } from 'framer-motion';
 import { renderDashboard } from '../../UtilityFunctions';
 import { sortBy } from '../../UtilityFunctions';
 import { dashboardSelector } from '../Redux/dashboardSlice/dashboardSlice';
-
+import LoadingPreset from '../../UtilityFunctions';
 function TypePlaceHolder(sampleObj,sort) {
     if (sampleObj !== undefined  && (sampleObj.category === 'actorsSearch' || sampleObj.category === 'showSearch')) {
         return 'searchResults';
@@ -59,7 +59,7 @@ function Slides() {
             <div className="dashboard-container">
                 <div className="dashboard-header">
                     <h3>My Dashboard</h3>
-                        
+                   
                 </div>
                 <div className="searchResults">
                 <div className="filter-buttons">
@@ -68,18 +68,19 @@ function Slides() {
                             {button}
                         </button>)
                     })}
+                    
                 </div>
                     <input value={searchResults} placeholder=" search results"  onChange={(event)=> setSearchResults(event.target.value)} />
                 </div>
                 <div className="resultContainer">
+                {pagesOfDashboard.length === 0 ? LoadingPreset() : (<div>
                     <div>
-                        <div>
-                            {pagesOfDashboard.filter(i => i.length > 0).map((_,index)=> {
-                                return <button style={{backgroundColor: index+1 === page ? 'rgb(35, 35, 90)' : 'white', color: index+1 === page ? 'white' : 'rgb(35, 35, 90)'}} onClick={() => setPage(() =>  (index + 1))} className="pages">{index + 1}</button>
-                            })}
-                        </div>
-                    {dashboardRendered}
+                        {pagesOfDashboard.filter(i => i.length > 0).map((_,index)=> {
+                            return <button style={{backgroundColor: index+1 === page ? 'rgb(35, 35, 90)' : 'white', color: index+1 === page ? 'white' : 'rgb(35, 35, 90)'}} onClick={() => setPage(() =>  (index + 1))} className="pages">{index + 1}</button>
+                        })}
                     </div>
+                {dashboardRendered}
+                </div>)}
                 
                 </div>
             </div>

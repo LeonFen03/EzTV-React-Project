@@ -32,7 +32,6 @@ function BlackBox ({reset}) {
             <button onClick={() => { Actors(dispatch,searchMedia,'https://api.tvmaze.com/people')
           reset(1)
           }}>View Actors</button>
-          <button >Add To My Schedule</button>
             <div className="filter">
                   <button>Clear Selected</button>
             </div>
