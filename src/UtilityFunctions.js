@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { clearArray,addToRender } from "./components/Redux/dashboardSlice/dashboardSlice";
 import { assignProfileID,loadAll } from "./components/Redux/profileSlice/profileSlice";
 import { addShow } from "./components/Redux/profileSlice/profileSlice";
 import { animate } from "framer-motion";
 import { addActor } from "./components/Redux/profileSlice/profileSlice";
+import { useEffect } from "react";
 import ArrowL from './images/arrowL.svg';
 import ArrowR from './images/arrowR.svg';
 const date = new Date();
@@ -23,13 +24,37 @@ export async function mediaData(url = 'https://api.tvmaze.com/schedule/full') {
     return await allSchedules.json();
 }    
 
-export default function LoadingPreset() {
-    return (<div className="loader-container">
-        <p style={{position:'absolute',fontSize:'0.7em'}}>Loading...</p>
-    <div className="spinner"></div>
-</div>)
+export default function LoadingPreset({results}) {
+
+    const render =  (<div className="loader-container">
+    <p style={{position:'absolute',fontSize:'0.7em'}}>Loading...</p>
+<div className="spinner"></div>
+</div>);
+    const [load,setLoad] = useState(render);
+    useEffect(()=> {
+        const timeOut = setTimeout(()=> {
+            if (!results.length) {
+                setLoad(<div>
+                    Nothing found in this region.
+                </div>)
+            }
+            return () => {
+                clearTimeout(timeOut);
+            }
+        },10000);
+    },[results])
+        return (load);
+
 }
 
+
+export function timeOutNoResults(resolved,results) {
+    if (resolved) {
+        return results;
+    } else {
+        return (LoadingPreset());
+    }
+}
 //Military time converter 
 // Render HTML DashBoard Objects
 export function htmlRender(showObject,key = '') {
@@ -85,10 +110,10 @@ export function htmlRender(showObject,key = '') {
 // DashBoard logic for Elements sorted through Objects or Arrays.
 export function renderDashboard (array,search='',sortedWithObject = false) {
     if (sortedWithObject === true) {
-        return array.map((element)=> {
-            return [<h2 >{element[0]} <img src=""/> </h2>,element[1].map((element,index)=> {
+        return array.map((mediaElement)=> {
+            return [<h2 >{mediaElement[0]} </h2>,mediaElement[1].map((element,index)=> {
             
-            if (( (element.name.includes(search)) || element.episodeName.includes(search) || (element.hasOwnProperty('airdate') && element.airdate.includes(search))) ) {
+            if (( (element.name.includes(search)) || element.episodeName.includes(search) || (element.hasOwnProperty('airdate') && element.airdate.includes(search)) || mediaElement[0].includes(search)) ) {
                return htmlRender(element,index);
             }
             return '';
@@ -152,6 +177,9 @@ export function sortBy(array,type = 'By Day') {
          Popular: {
             "Most Popular":[],
             "UnRated":[]
+         },
+         Channels: {
+
          }
     }
     if (type === 'By Day') {
@@ -211,7 +239,16 @@ export function sortBy(array,type = 'By Day') {
             }
         })
         return [true,Object.entries(sortType.SearchResults)]
-    } 
+    }  else if (type === 'By Channels') {
+        array.forEach((Media) => {
+            if (!Media.channel) {
+                sortType.Channels.hasOwnProperty("No Recorded Channel") ? sortType.Channels["No Recorded Channel"].push(Media) : sortType.Channels["No Recorded Channel"] = [Media];
+            } else {
+                sortType.Channels.hasOwnProperty(Media.channel) ? sortType.Channels[Media.channel].push(Media) : sortType.Channels[Media.channel] = [Media];
+            }
+        })
+        return [true, Object.entries(sortType.Channels)];
+    }
 
  
  }

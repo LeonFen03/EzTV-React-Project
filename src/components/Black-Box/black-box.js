@@ -25,7 +25,7 @@ function BlackBox ({reset}) {
             reset(1)
              }
             
-          }>Search</button>
+          }>Search </button>
             <button onClick={() => { newContent(dispatch,country) 
             reset(1)
             }}>View Shows</button>

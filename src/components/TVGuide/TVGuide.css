@@ -43,6 +43,11 @@
      color:rgb(35, 35, 90);
     padding: 10px;
     box-shadow:0px 0px 0px;
+    transition: 0.6s;
+}
+#seasonContainer  .btn:hover  {
+    background-color:rgba(208, 208, 208, 0.575);
+    border-radius:200px;
 }
 #seasonContainer .header {
     display:flex;
